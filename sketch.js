@@ -17,20 +17,50 @@ function draw() {
 } 
 
 function boid(location) {
-  location: false
-  velocity: false
+ //location is a VECTOR- WISH I COULD USE TYPES
+  location: false;
+  velocity: false;
 
   this.location = location;
-  step = function() {
-      acceleration = this.flock(neighbours)
-      velocity.add(acceleration).limit(MAX_SPEED)
-      location.add(velocity)
+
+  update = function() {
+      acceleration = this.flock(neighbours);
+      velocity.add(acceleration).limit(MAX_SPEED);
+      location.add(velocity);
   }
 
   flock = function(neighbours) {
-    separation = this.separate(neighbours).multiply(SEPARATION_WEIGHT)
-    alignment = this.align(neighbours).multiply(ALIGNMENT_WEIGHT)
-    cohesion = this.cohere(neighbours).multiply(COHESION_WEIGHT)
-    return separation.add(alignment).add(cohesion)
+    separation = this.separate(neighbours).mult(SEPARATION_WEIGHT);
+    alignment = this.align(neighbours).mult(ALIGNMENT_WEIGHT);
+    cohesion = this.cohere(neighbours).mult(COHESION_WEIGHT);
+    return separation.add(alignment).add(cohesion);
   }
+
+  //returns P5 vector
+  cohere = function(neighbours) {
+    let sum = new p5.Vector();
+    if(neighbours){
+        neighbours.foreach((boid) => {
+            distance = this.location.dist()
+            if(distance > 0 && distance < target-area){
+                sum.add(boid.location);
+                this.steer(boid.location);
+                count++;
+                if(count > 0){
+                    return this.steer()
+                }else{
+                    return sum;
+                }
+            }
+        })
+    }
+  }
+
+  steer = function(target){
+      //get vector pointing to target
+      let desiredTarget = p5.Vector.sub(target, this.location);
+
+      //get 
+  }
+
 }
